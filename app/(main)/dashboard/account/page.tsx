@@ -1,4 +1,6 @@
-import { Suspense } from "react";
+"use client"
+
+import { Suspense, useState } from "react";
 import { 
   User,
   Building,
@@ -12,8 +14,11 @@ import {
   Edit,
   Save,
   Eye,
-  EyeOff
+  EyeOff,
+  LogOut
 } from "lucide-react";
+import { useAuth } from "@/components/auth/auth-provider";
+import { signOut } from "@/lib/auth-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -133,6 +138,30 @@ function formatDate(dateString: string) {
 }
 
 export default function AccountPage() {
+  const { user, isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsLoading(true);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-12">
+          <p className="text-gray-500">Sie müssen angemeldet sein, um diese Seite zu sehen.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -142,11 +171,20 @@ export default function AccountPage() {
           <p className="mt-1 text-sm text-gray-500">
             Verwalten Sie Ihre Firmeninformationen, Kontaktdaten und Präferenzen
           </p>
+          {user && (
+            <p className="text-sm text-blue-600">
+              Angemeldet als: {user.email} ({user.role})
+            </p>
+          )}
         </div>
         <div className="flex space-x-2">
           <Button variant="outline">
             <FileText className="w-4 h-4 mr-2" />
             Kontoauszug
+          </Button>
+          <Button variant="outline" onClick={handleSignOut} disabled={isLoading}>
+            <LogOut className="w-4 h-4 mr-2" />
+            {isLoading ? "Abmeldung..." : "Abmelden"}
           </Button>
           <Button>
             <Save className="w-4 h-4 mr-2" />
@@ -207,20 +245,20 @@ export default function AccountPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">Vorname</Label>
-                    <Input id="firstName" defaultValue={accountData.contact.firstName} />
+                    <Input id="firstName" defaultValue={user.name?.split(' ')[0] || ''} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Nachname</Label>
-                    <Input id="lastName" defaultValue={accountData.contact.lastName} />
+                    <Input id="lastName" defaultValue={user.name?.split(' ').slice(1).join(' ') || ''} />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="position">Position</Label>
-                  <Input id="position" defaultValue={accountData.contact.position} />
+                  <Input id="position" defaultValue="" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">E-Mail</Label>
-                  <Input id="email" type="email" defaultValue={accountData.contact.email} />
+                  <Input id="email" type="email" defaultValue={user.email} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -286,11 +324,11 @@ export default function AccountPage() {
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="companyName">Firmenname</Label>
-                  <Input id="companyName" defaultValue={accountData.company.name} />
+                  <Input id="companyName" defaultValue={user.companyName || ''} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="customerNumber">Kundennummer</Label>
-                  <Input id="customerNumber" defaultValue={accountData.company.customerNumber} disabled />
+                  <Input id="customerNumber" defaultValue={user.customerNumber || ''} disabled />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="taxNumber">Steuernummer</Label>
@@ -543,7 +581,3 @@ export default function AccountPage() {
   );
 }
 
-export const metadata = {
-  title: "Konto-Einstellungen | Händlerportal",
-  description: "Verwalten Sie Ihre Firmeninformationen, Kontaktdaten und Präferenzen",
-};
