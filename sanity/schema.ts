@@ -8,6 +8,13 @@ import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
 import navigation from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
+// product catalog documents
+import manufacturer from "./schemas/documents/manufacturer";
+import productCategory from "./schemas/documents/product-category";
+import product from "./schemas/documents/product";
+import vehicleModel from "./schemas/documents/vehicle-model";
+import vehicleCompatibility from "./schemas/documents/vehicle-compatibility";
+import productDocument from "./schemas/documents/product-document";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -15,6 +22,8 @@ import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
+// product catalog shared objects
+import productVariant from "./schemas/shared/product-variant";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import hero2 from "./schemas/blocks/hero/hero-2";
@@ -39,6 +48,7 @@ import logoCloud1 from "./schemas/blocks/logo-cloud/logo-cloud-1";
 import faqs from "./schemas/blocks/faqs";
 import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
+import productCatalog from "./schemas/blocks/product-catalog";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -51,12 +61,20 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     testimonial,
     navigation,
     settings,
+    // product catalog documents
+    manufacturer,
+    productCategory,
+    product,
+    vehicleModel,
+    vehicleCompatibility,
+    productDocument,
     // shared objects
     blockContent,
     link,
     colorVariant,
     buttonVariant,
     sectionPadding,
+    productVariant,
     // blocks
     hero1,
     hero2,
@@ -81,5 +99,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     faqs,
     newsletter,
     allPosts,
+    productCatalog,
   ],
 };

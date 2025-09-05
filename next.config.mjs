@@ -19,6 +19,22 @@ const nextConfig = {
       },
     ],
   },
+  // Fix for Sanity Studio compatibility with Next.js 15
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        crypto: false,
+        stream: false,
+        util: false,
+      };
+    }
+
+    return config;
+  },
+  transpilePackages: ['sanity'],
 };
 
 export default nextConfig;

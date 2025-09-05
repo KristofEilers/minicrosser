@@ -13,6 +13,30 @@
  */
 
 // Source: schema.json
+export type ProductCatalog = {
+  _type: "product-catalog";
+  title?: string;
+  subtitle?: string;
+  showSearch?: boolean;
+  showCategories?: boolean;
+  showManufacturers?: boolean;
+  productsPerPage?: number;
+  featuredCategories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "productCategory";
+  }>;
+  featuredManufacturers?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "manufacturer";
+  }>;
+};
+
 export type AllPosts = {
   _type: "all-posts";
   padding?: SectionPadding;
@@ -657,6 +681,42 @@ export type Hero1 = {
   } & Link>;
 };
 
+export type ProductVariant = {
+  _type: "productVariant";
+  sku?: string;
+  name?: string;
+  attributes?: Array<{
+    name?: string;
+    value?: string;
+    _type: "attribute";
+    _key: string;
+  }>;
+  basePrice?: number;
+  weight?: number;
+  dimensions?: {
+    length?: number;
+    width?: number;
+    height?: number;
+  };
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
+  }>;
+  stockStatus?: "inStock" | "lowStock" | "outOfStock" | "discontinued" | "preOrder";
+  isActive?: boolean;
+};
+
 export type SectionPadding = {
   _type: "section-padding";
   top?: boolean;
@@ -737,6 +797,238 @@ export type BlockContent = Array<{
 } | {
   _key: string;
 } & Code>;
+
+export type ProductDocument = {
+  _id: string;
+  _type: "productDocument";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  type?: "installation" | "manual" | "datasheet" | "certificate" | "warranty" | "safety" | "cad" | "exploded" | "compatibility" | "other";
+  file?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    media?: unknown;
+    _type: "file";
+  };
+  description?: string;
+  language?: "de" | "en" | "fr" | "es" | "it" | "multi";
+  version?: string;
+  validFrom?: string;
+  validTo?: string;
+  products?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "product";
+  }>;
+  categories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "productCategory";
+  }>;
+  isPublic?: boolean;
+  downloadCount?: number;
+  fileSize?: number;
+};
+
+export type VehicleCompatibility = {
+  _id: string;
+  _type: "vehicleCompatibility";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  vehicle?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "vehicleModel";
+  };
+  specificEngines?: Array<string>;
+  yearFrom?: number;
+  yearTo?: number;
+  chassisFrom?: string;
+  chassisTo?: string;
+  restrictions?: string;
+  position?: "front" | "rear" | "left" | "right" | "frontLeft" | "frontRight" | "rearLeft" | "rearRight" | "all";
+  transmissionTypes?: Array<"manual" | "automatic" | "cvt" | "dct">;
+  driveTypes?: Array<"fwd" | "rwd" | "awd" | "4wd">;
+  confidence?: "confirmed" | "likely" | "verify";
+};
+
+export type VehicleModel = {
+  _id: string;
+  _type: "vehicleModel";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  manufacturer?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "manufacturer";
+  };
+  model?: string;
+  generation?: string;
+  bodyType?: "sedan" | "wagon" | "hatchback" | "coupe" | "convertible" | "suv" | "pickup" | "van";
+  productionYearFrom?: number;
+  productionYearTo?: number;
+  engines?: Array<{
+    code?: string;
+    displacement?: number;
+    power?: number;
+    fuelType?: "petrol" | "diesel" | "electric" | "hybrid" | "lpg" | "cng";
+    _type: "engine";
+    _key: string;
+  }>;
+  chassis?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  isActive?: boolean;
+};
+
+export type Product = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  productNumber?: string;
+  manufacturer?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "manufacturer";
+  };
+  categories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "productCategory";
+  }>;
+  shortDescription?: string;
+  description?: BlockContent;
+  features?: Array<string>;
+  specifications?: Array<{
+    name?: string;
+    value?: string;
+    unit?: string;
+    _type: "specification";
+    _key: string;
+  }>;
+  variants?: Array<{
+    _key: string;
+  } & ProductVariant>;
+  priceList?: string;
+  compatibleVehicles?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "vehicleCompatibility";
+  }>;
+  replacesPartNumbers?: Array<string>;
+  replacedByPartNumbers?: Array<string>;
+  relatedProducts?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "product";
+  }>;
+  documents?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "productDocument";
+  }>;
+  seoTitle?: string;
+  seoDescription?: string;
+  searchKeywords?: Array<string>;
+  isActive?: boolean;
+};
+
+export type ProductCategory = {
+  _id: string;
+  _type: "productCategory";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  code?: string;
+  parent?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "productCategory";
+  };
+  description?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  seoTitle?: string;
+  seoDescription?: string;
+  isActive?: boolean;
+  sortOrder?: number;
+};
+
+export type Manufacturer = {
+  _id: string;
+  _type: "manufacturer";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  code?: string;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  website?: string;
+  description?: string;
+  isActive?: boolean;
+};
 
 export type Settings = {
   _id: string;
@@ -867,7 +1159,9 @@ export type Page = {
     _key: string;
   } & FormNewsletter | {
     _key: string;
-  } & AllPosts>;
+  } & AllPosts | {
+    _key: string;
+  } & ProductCatalog>;
   meta_title?: string;
   meta_description?: string;
   noindex?: boolean;
@@ -1089,7 +1383,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = AllPosts | FormNewsletter | Faqs | LogoCloud1 | Cta1 | Timelines1 | TimelineRow | Carousel2 | Carousel1 | GridRow | GridPost | PricingCard | GridCard | SplitInfo | SplitInfoList | SplitImage | SplitCard | SplitCardsList | SplitContent | SplitRow | SectionHeader | Hero2 | Hero1 | SectionPadding | ButtonVariant | ColorVariant | Link | BlockContent | Settings | Navigation | Testimonial | Faq | Category | Page | Post | Author | Code | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = ProductCatalog | AllPosts | FormNewsletter | Faqs | LogoCloud1 | Cta1 | Timelines1 | TimelineRow | Carousel2 | Carousel1 | GridRow | GridPost | PricingCard | GridCard | SplitInfo | SplitInfoList | SplitImage | SplitCard | SplitCardsList | SplitContent | SplitRow | SectionHeader | Hero2 | Hero1 | ProductVariant | SectionPadding | ButtonVariant | ColorVariant | Link | BlockContent | ProductDocument | VehicleCompatibility | VehicleModel | Product | ProductCategory | Manufacturer | Settings | Navigation | Testimonial | Faq | Category | Page | Post | Author | Code | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/sitemap.ts
 // Variable: pagesQuery
@@ -1109,6 +1403,506 @@ export type PostsQueryResult = Array<{
   priority: 0.7;
 }>;
 
+// Source: ./sanity/queries/catalog/categories.ts
+// Variable: CATEGORIES_QUERY
+// Query: *[_type == "productCategory" && isActive == true] | order(sortOrder asc, name asc) {    _id,    name,    code,    slug,    description,    image{      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    parent->{      _id,      name,      code,      slug    },    "children": *[_type == "productCategory" && parent._ref == ^._id && isActive == true] | order(sortOrder asc, name asc) {      _id,      name,      code,      slug,      description,      image{        asset->{          url,          metadata {            lqip          }        }      }    },    "productCount": count(*[_type == "product" && ^._id in categories[]._ref && isActive == true])  }
+export type CATEGORIES_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  code: string | null;
+  slug: Slug | null;
+  description: string | null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: null;
+  } | null;
+  parent: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+  } | null;
+  children: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+    description: string | null;
+    image: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  }>;
+  productCount: number;
+}>;
+// Variable: ROOT_CATEGORIES_QUERY
+// Query: *[_type == "productCategory" && !defined(parent) && isActive == true] | order(sortOrder asc, name asc) {    _id,    name,    code,    slug,    description,    image{      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    "children": *[_type == "productCategory" && parent._ref == ^._id && isActive == true] | order(sortOrder asc, name asc) {      _id,      name,      code,      slug,      image{        asset->{          url,          metadata {            lqip          }        }      },      "productCount": count(*[_type == "product" && ^._id in categories[]._ref && isActive == true])    },    "productCount": count(*[_type == "product" && ^._id in categories[]._ref && isActive == true])  }
+export type ROOT_CATEGORIES_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  code: string | null;
+  slug: Slug | null;
+  description: string | null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: null;
+  } | null;
+  children: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+    image: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+    productCount: number;
+  }>;
+  productCount: number;
+}>;
+// Variable: CATEGORY_QUERY
+// Query: *[_type == "productCategory" && slug.current == $slug][0]{    _id,    name,    code,    slug,    description,    image{      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    parent->{      _id,      name,      code,      slug,      parent->{        _id,        name,        code,        slug      }    },    "children": *[_type == "productCategory" && parent._ref == ^._id && isActive == true] | order(sortOrder asc, name asc) {      _id,      name,      code,      slug,      description,      image{        asset->{          url,          metadata {            lqip          }        }      },      "productCount": count(*[_type == "product" && ^._id in categories[]._ref && isActive == true])    },    "products": *[_type == "product" && ^._id in categories[]._ref && isActive == true] | order(name asc) [0..11] {      _id,      name,      slug,      productNumber,      manufacturer->{        name,        code      },      shortDescription,      variants[0]{        sku,        basePrice,        stockStatus,        images[0]{          asset->{            url,            metadata {              lqip            }          },          alt        }      }    },    "totalProducts": count(*[_type == "product" && ^._id in categories[]._ref && isActive == true]),    seoTitle,    seoDescription  }
+export type CATEGORY_QUERYResult = {
+  _id: string;
+  name: string | null;
+  code: string | null;
+  slug: Slug | null;
+  description: string | null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: null;
+  } | null;
+  parent: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+    parent: {
+      _id: string;
+      name: string | null;
+      code: string | null;
+      slug: Slug | null;
+    } | null;
+  } | null;
+  children: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+    description: string | null;
+    image: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+    productCount: number;
+  }>;
+  products: Array<{
+    _id: string;
+    name: string | null;
+    slug: Slug | null;
+    productNumber: string | null;
+    manufacturer: {
+      name: string | null;
+      code: string | null;
+    } | null;
+    shortDescription: string | null;
+    variants: {
+      sku: string | null;
+      basePrice: number | null;
+      stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+      images: {
+        asset: {
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+    } | null;
+  }>;
+  totalProducts: number;
+  seoTitle: string | null;
+  seoDescription: string | null;
+} | null;
+// Variable: CATEGORIES_SLUGS_QUERY
+// Query: *[_type == "productCategory" && defined(slug) && isActive == true]{    slug  }
+export type CATEGORIES_SLUGS_QUERYResult = Array<{
+  slug: Slug | null;
+}>;
+
+// Source: ./sanity/queries/catalog/manufacturers.ts
+// Variable: MANUFACTURERS_QUERY
+// Query: *[_type == "manufacturer" && isActive == true] | order(name asc) {    _id,    name,    code,    slug,    logo{      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    description,    website,    "productCount": count(*[_type == "product" && manufacturer._ref == ^._id && isActive == true])  }
+export type MANUFACTURERS_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  code: string | null;
+  slug: Slug | null;
+  logo: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: null;
+  } | null;
+  description: string | null;
+  website: string | null;
+  productCount: number;
+}>;
+// Variable: MANUFACTURER_QUERY
+// Query: *[_type == "manufacturer" && slug.current == $slug][0]{    _id,    name,    code,    slug,    logo{      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    description,    website,    "products": *[_type == "product" && manufacturer._ref == ^._id && isActive == true] | order(name asc) [0..11] {      _id,      name,      slug,      productNumber,      shortDescription,      variants[0]{        sku,        basePrice,        images[0]{          asset->{            url,            metadata {              lqip            }          },          alt        }      }    },    "totalProducts": count(*[_type == "product" && manufacturer._ref == ^._id && isActive == true])  }
+export type MANUFACTURER_QUERYResult = {
+  _id: string;
+  name: string | null;
+  code: string | null;
+  slug: Slug | null;
+  logo: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: null;
+  } | null;
+  description: string | null;
+  website: string | null;
+  products: Array<{
+    _id: string;
+    name: string | null;
+    slug: Slug | null;
+    productNumber: string | null;
+    shortDescription: string | null;
+    variants: {
+      sku: string | null;
+      basePrice: number | null;
+      images: {
+        asset: {
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+    } | null;
+  }>;
+  totalProducts: number;
+} | null;
+// Variable: MANUFACTURERS_SLUGS_QUERY
+// Query: *[_type == "manufacturer" && defined(slug) && isActive == true]{    slug  }
+export type MANUFACTURERS_SLUGS_QUERYResult = Array<{
+  slug: Slug | null;
+}>;
+
+// Source: ./sanity/queries/catalog/search.ts
+// Variable: GLOBAL_SEARCH_QUERY
+// Query: *[    _type == "product" &&     isActive == true &&    ($searchTerm == "" ||      name match $searchTerm + "*" ||      productNumber match $searchTerm + "*" ||     manufacturer->name match $searchTerm + "*" ||     variants[].sku match $searchTerm + "*" ||     searchKeywords match $searchTerm + "*" ||     replacesPartNumbers match $searchTerm + "*"    )  ] | order(    select(      name match $searchTerm + "*" => 0,      productNumber match $searchTerm + "*" => 1,      variants[].sku match $searchTerm + "*" => 2,      manufacturer->name match $searchTerm + "*" => 3,      replacesPartNumbers match $searchTerm + "*" => 4,      searchKeywords match $searchTerm + "*" => 5,      6    ),    name asc  ) [0..49] {    _id,    name,    slug,    productNumber,    manufacturer->{      _id,      name,      code,      logo{        asset->{          url,          metadata {            lqip          }        }      }    },    categories[0]->{      _id,      name,      code    },    shortDescription,    variants[0]{      sku,      basePrice,      stockStatus,      images[0]{        asset->{          url,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      }    },    "matchType": select(      name match $searchTerm + "*" => "name",      productNumber match $searchTerm + "*" => "productNumber",      variants[].sku match $searchTerm + "*" => "sku",      manufacturer->name match $searchTerm + "*" => "manufacturer",      replacesPartNumbers match $searchTerm + "*" => "partNumber",      searchKeywords match $searchTerm + "*" => "keyword",      "other"    )  }
+export type GLOBAL_SEARCH_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+    logo: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+  categories: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+  } | null;
+  shortDescription: string | null;
+  variants: {
+    sku: string | null;
+    basePrice: number | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    images: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+  matchType: "keyword" | "manufacturer" | "name" | "other" | "partNumber" | "productNumber" | "sku";
+}>;
+// Variable: SEARCH_SUGGESTIONS_QUERY
+// Query: {    "products": *[      _type == "product" &&       isActive == true &&      (name match $searchTerm + "*" || productNumber match $searchTerm + "*")    ] | order(name asc) [0..4] {      name,      productNumber,      slug,      manufacturer->{        name,        code      }    },    "manufacturers": *[      _type == "manufacturer" &&       isActive == true &&      name match $searchTerm + "*"    ] | order(name asc) [0..3] {      name,      code,      slug    },    "categories": *[      _type == "productCategory" &&       isActive == true &&      name match $searchTerm + "*"    ] | order(name asc) [0..3] {      name,      code,      slug    }  }
+export type SEARCH_SUGGESTIONS_QUERYResult = {
+  products: Array<{
+    name: string | null;
+    productNumber: string | null;
+    slug: Slug | null;
+    manufacturer: {
+      name: string | null;
+      code: string | null;
+    } | null;
+  }>;
+  manufacturers: Array<{
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+  }>;
+  categories: Array<{
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+  }>;
+};
+// Variable: SEARCH_FILTERS_QUERY
+// Query: {    "manufacturers": *[      _type == "manufacturer" &&       isActive == true &&      count(*[_type == "product" && manufacturer._ref == ^._id && isActive == true]) > 0    ] | order(name asc) {      _id,      name,      code,      "productCount": count(*[_type == "product" && manufacturer._ref == ^._id && isActive == true])    },    "categories": *[      _type == "productCategory" &&       isActive == true &&      count(*[_type == "product" && ^._id in categories[]._ref && isActive == true]) > 0    ] | order(name asc) {      _id,      name,      code,      parent->{        _id,        name      },      "productCount": count(*[_type == "product" && ^._id in categories[]._ref && isActive == true])    }  }
+export type SEARCH_FILTERS_QUERYResult = {
+  manufacturers: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+    productCount: number;
+  }>;
+  categories: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+    parent: {
+      _id: string;
+      name: string | null;
+    } | null;
+    productCount: number;
+  }>;
+};
+// Variable: PART_NUMBER_LOOKUP_QUERY
+// Query: *[    _type == "product" &&     isActive == true &&    (      productNumber == $partNumber ||      variants[].sku == $partNumber ||      replacesPartNumbers match $partNumber    )  ] | order(    select(      productNumber == $partNumber => 0,      variants[].sku == $partNumber => 1,      2    )  ) [0..9] {    _id,    name,    slug,    productNumber,    manufacturer->{      name,      code    },    variants[sku == $partNumber || productNumber == $partNumber][0]{      sku,      basePrice,      stockStatus,      images[0]{        asset->{          url,          metadata {            lqip          }        },        alt      }    },    "matchType": select(      productNumber == $partNumber => "exact",      variants[].sku == $partNumber => "variant",      "replacement"    )  }
+export type PART_NUMBER_LOOKUP_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    name: string | null;
+    code: string | null;
+  } | null;
+  variants: {
+    sku: string | null;
+    basePrice: number | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    images: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+  matchType: "exact" | "replacement" | "variant";
+}>;
+
+// Source: ./sanity/queries/catalog/vehicles.ts
+// Variable: VEHICLES_QUERY
+// Query: *[_type == "manufacturer" && isActive == true] | order(name asc) {    _id,    name,    code,    "models": *[_type == "vehicleModel" && manufacturer._ref == ^._id && isActive == true] | order(model asc, productionYearFrom desc) {      _id,      model,      generation,      bodyType,      productionYearFrom,      productionYearTo,      engines[]{        code,        displacement,        power,        fuelType      },      chassis,      image{        asset->{          url,          metadata {            lqip          }        }      }    }  }
+export type VEHICLES_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  code: string | null;
+  models: Array<{
+    _id: string;
+    model: string | null;
+    generation: string | null;
+    bodyType: "convertible" | "coupe" | "hatchback" | "pickup" | "sedan" | "suv" | "van" | "wagon" | null;
+    productionYearFrom: number | null;
+    productionYearTo: number | null;
+    engines: Array<{
+      code: string | null;
+      displacement: number | null;
+      power: number | null;
+      fuelType: "cng" | "diesel" | "electric" | "hybrid" | "lpg" | "petrol" | null;
+    }> | null;
+    chassis: string | null;
+    image: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  }>;
+}>;
+// Variable: VEHICLE_QUERY
+// Query: *[_type == "vehicleModel" && _id == $vehicleId][0]{    _id,    manufacturer->{      _id,      name,      code,      logo{        asset->{          url,          metadata {            lqip          }        }      }    },    model,    generation,    bodyType,    productionYearFrom,    productionYearTo,    engines[]{      code,      displacement,      power,      fuelType    },    chassis,    image{      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    "compatibleProducts": *[_type == "product" && isActive == true && $vehicleId in compatibleVehicles[]->vehicle._ref] | order(name asc) {      _id,      name,      slug,      productNumber,      manufacturer->{        name,        code      },      categories[0]->{        name,        code      },      shortDescription,      variants[0]{        sku,        basePrice,        stockStatus,        images[0]{          asset->{            url,            metadata {              lqip            }          },          alt        }      },      compatibleVehicles[vehicle._ref == $vehicleId][0]{        position,        restrictions,        specificEngines,        confidence      }    }  }
+export type VEHICLE_QUERYResult = {
+  _id: string;
+  manufacturer: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+    logo: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+  model: string | null;
+  generation: string | null;
+  bodyType: "convertible" | "coupe" | "hatchback" | "pickup" | "sedan" | "suv" | "van" | "wagon" | null;
+  productionYearFrom: number | null;
+  productionYearTo: number | null;
+  engines: Array<{
+    code: string | null;
+    displacement: number | null;
+    power: number | null;
+    fuelType: "cng" | "diesel" | "electric" | "hybrid" | "lpg" | "petrol" | null;
+  }> | null;
+  chassis: string | null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: null;
+  } | null;
+  compatibleProducts: Array<{
+    _id: string;
+    name: string | null;
+    slug: Slug | null;
+    productNumber: string | null;
+    manufacturer: {
+      name: string | null;
+      code: string | null;
+    } | null;
+    categories: {
+      name: string | null;
+      code: string | null;
+    } | null;
+    shortDescription: string | null;
+    variants: {
+      sku: string | null;
+      basePrice: number | null;
+      stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+      images: {
+        asset: {
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+    } | null;
+    compatibleVehicles: {
+      position: null;
+      restrictions: null;
+      specificEngines: null;
+      confidence: null;
+    } | null;
+  }>;
+} | null;
+// Variable: VEHICLE_COMPATIBILITY_QUERY
+// Query: *[    _type == "vehicleModel" &&     isActive == true &&    ($manufacturerId == "" || manufacturer._ref == $manufacturerId) &&    ($model == "" || model match $model + "*") &&    ($yearFrom == null || productionYearFrom <= $yearFrom) &&    ($yearTo == null || !defined(productionYearTo) || productionYearTo >= $yearTo)  ] | order(manufacturer->name asc, model asc, productionYearFrom desc) [0..49] {    _id,    manufacturer->{      _id,      name,      code    },    model,    generation,    bodyType,    productionYearFrom,    productionYearTo,    engines[0]{      code,      displacement,      fuelType    },    "productCount": count(*[_type == "product" && ^._id in compatibleVehicles[]->vehicle._ref && isActive == true])  }
+export type VEHICLE_COMPATIBILITY_QUERYResult = Array<{
+  _id: string;
+  manufacturer: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+  } | null;
+  model: string | null;
+  generation: string | null;
+  bodyType: "convertible" | "coupe" | "hatchback" | "pickup" | "sedan" | "suv" | "van" | "wagon" | null;
+  productionYearFrom: number | null;
+  productionYearTo: number | null;
+  engines: {
+    code: string | null;
+    displacement: number | null;
+    fuelType: "cng" | "diesel" | "electric" | "hybrid" | "lpg" | "petrol" | null;
+  } | null;
+  productCount: number;
+}>;
+// Variable: POPULAR_VEHICLES_QUERY
+// Query: *[_type == "vehicleModel" && isActive == true] {    _id,    manufacturer->{      name,      code    },    model,    generation,    productionYearFrom,    productionYearTo,    "productCount": count(*[_type == "product" && ^._id in compatibleVehicles[]->vehicle._ref && isActive == true])  } | order(productCount desc) [0..11] | productCount > 0
+export type POPULAR_VEHICLES_QUERYResult = null;
+
 // Source: ./sanity/queries/navigation.ts
 // Variable: NAVIGATION_QUERY
 // Query: *[_type == "navigation"]{    _type,    _key,    links  }
@@ -1122,7 +1916,7 @@ export type NAVIGATION_QUERYResult = Array<{
 
 // Source: ./sanity/queries/page.ts
 // Variable: PAGE_QUERY
-// Query: *[_type == "page" && slug.current == $slug][0]{    blocks[]{        _type == "hero-1" => {    _type,    _key,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "hero-2" => {    _type,    _key,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "section-header" => {    _type,    _key,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "split-row" => {    _type,    _key,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content" => {    _type,    _key,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "split-cards-list" => {    _type,    _key,    list[]{      tagLine,      title,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },    },  },        _type == "split-image" => {    _type,    _key,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },  },        _type == "split-info-list" => {    _type,    _key,    list[]{      image{          ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }      },      title,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },      tags[],    },  },    },  },        _type == "grid-row" => {    _type,    _key,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card" => {    _type,    _key,    title,    excerpt,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "pricing-card" => {    _type,    _key,    title,    tagLine,    price,    list[],    excerpt,    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "grid-post" => {    _type,    _key,    post->{      title,      slug,      excerpt,      image{          ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }      },      categories[]->{        _id,        title,      },    },  },    },  },        _type == "carousel-1" => {    _type,    _key,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },  },        _type == "carousel-2" => {    _type,    _key,    padding,    colorVariant,    testimonial[]->{      _id,      name,      title,      image{          ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }      },      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },      rating,    },  },        _type == "timeline-row" => {    _type,    _key,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },    },  },        _type == "cta-1" => {    _type,    _key,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "logo-cloud-1" => {    _type,    _key,    padding,    colorVariant,    title,    images[]{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },  },        _type == "faqs" => {    _type,    _key,    padding,    colorVariant,    faqs[]->{      _id,      title,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },    },  },        _type == "form-newsletter" => {    _type,    _key,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },        _type == "all-posts" => {    _type,    _key,    padding,    colorVariant,  },    },    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  }
+// Query: *[_type == "page" && slug.current == $slug][0]{    blocks[]{        _type == "hero-1" => {    _type,    _key,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "hero-2" => {    _type,    _key,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "section-header" => {    _type,    _key,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "split-row" => {    _type,    _key,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content" => {    _type,    _key,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "split-cards-list" => {    _type,    _key,    list[]{      tagLine,      title,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },    },  },        _type == "split-image" => {    _type,    _key,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },  },        _type == "split-info-list" => {    _type,    _key,    list[]{      image{          ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }      },      title,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },      tags[],    },  },    },  },        _type == "grid-row" => {    _type,    _key,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card" => {    _type,    _key,    title,    excerpt,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "pricing-card" => {    _type,    _key,    title,    tagLine,    price,    list[],    excerpt,    link{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "grid-post" => {    _type,    _key,    post->{      title,      slug,      excerpt,      image{          ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }      },      categories[]->{        _id,        title,      },    },  },    },  },        _type == "carousel-1" => {    _type,    _key,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },  },        _type == "carousel-2" => {    _type,    _key,    padding,    colorVariant,    testimonial[]->{      _id,      name,      title,      image{          ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }      },      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },      rating,    },  },        _type == "timeline-row" => {    _type,    _key,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },    },  },        _type == "cta-1" => {    _type,    _key,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },        _type == "logo-cloud-1" => {    _type,    _key,    padding,    colorVariant,    title,    images[]{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },  },        _type == "faqs" => {    _type,    _key,    padding,    colorVariant,    faqs[]->{      _id,      title,      body[]{          ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }      },    },  },        _type == "form-newsletter" => {    _type,    _key,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },        _type == "all-posts" => {    _type,    _key,    padding,    colorVariant,  },        _type == "product-catalog" => {    _type,    _key,    title,    subtitle,    showSearch,    showCategories,    showManufacturers,    productsPerPage,    featuredCategories[]->{      _id,      name,      slug    },    featuredManufacturers[]->{      _id,      name,      slug    },    padding,    colorVariant,  },    },    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  }
 export type PAGE_QUERYResult = {
   blocks: Array<{
     _type: "all-posts";
@@ -1762,6 +2556,27 @@ export type PAGE_QUERYResult = {
       _key: string;
     }> | null;
   } | {
+    _type: "product-catalog";
+    _key: string;
+    title: string | null;
+    subtitle: string | null;
+    showSearch: boolean | null;
+    showCategories: boolean | null;
+    showManufacturers: boolean | null;
+    productsPerPage: number | null;
+    featuredCategories: Array<{
+      _id: string;
+      name: string | null;
+      slug: Slug | null;
+    }> | null;
+    featuredManufacturers: Array<{
+      _id: string;
+      name: string | null;
+      slug: Slug | null;
+    }> | null;
+    padding: null;
+    colorVariant: null;
+  } | {
     _type: "section-header";
     _key: string;
     padding: SectionPadding | null;
@@ -2311,6 +3126,314 @@ export type POSTS_SLUGS_QUERYResult = Array<{
   slug: Slug | null;
 }>;
 
+// Source: ./sanity/queries/product/product.ts
+// Variable: PRODUCT_QUERY
+// Query: *[_type == "product" && slug.current == $slug][0]{    _id,    _type,    name,    slug,    productNumber,    manufacturer->{      _id,      name,      code,      logo{        asset->{          _id,          url,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      }    },    categories[]->{      _id,      name,      code,      slug    },    shortDescription,    description,    features,    specifications[]{      name,      value,      unit    },    variants[]{      sku,      name,      attributes[]{        name,        value      },      basePrice,      weight,      dimensions{        length,        width,        height      },      images[]{        asset->{          _id,          url,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt,        caption      },      stockStatus,      isActive    },    compatibleVehicles[]->{      _id,      vehicle->{        _id,        manufacturer->{          name,          code        },        model,        generation,        productionYearFrom,        productionYearTo      },      specificEngines,      position,      restrictions,      confidence    },    replacesPartNumbers,    replacedByPartNumbers,    relatedProducts[]->{      _id,      name,      slug,      productNumber,      manufacturer->{        name,        code      },      variants[0]{        basePrice,        images[0]{          asset->{            url,            metadata {              lqip            }          },          alt        }      }    },    documents[]->{      _id,      title,      type,      description,      language,      version,      file{        asset->{          url,          size        }      },      fileSize    },    searchKeywords,    seoTitle,    seoDescription,    _updatedAt  }
+export type PRODUCT_QUERYResult = {
+  _id: string;
+  _type: "product";
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+    logo: {
+      asset: {
+        _id: string;
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      alt: null;
+    } | null;
+  } | null;
+  categories: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+    slug: Slug | null;
+  }> | null;
+  shortDescription: string | null;
+  description: BlockContent | null;
+  features: Array<string> | null;
+  specifications: Array<{
+    name: string | null;
+    value: string | null;
+    unit: string | null;
+  }> | null;
+  variants: Array<{
+    sku: string | null;
+    name: string | null;
+    attributes: Array<{
+      name: string | null;
+      value: string | null;
+    }> | null;
+    basePrice: number | null;
+    weight: number | null;
+    dimensions: {
+      length: number | null;
+      width: number | null;
+      height: number | null;
+    } | null;
+    images: Array<{
+      asset: {
+        _id: string;
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      alt: string | null;
+      caption: string | null;
+    }> | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    isActive: boolean | null;
+  }> | null;
+  compatibleVehicles: Array<{
+    _id: string;
+    vehicle: {
+      _id: string;
+      manufacturer: {
+        name: string | null;
+        code: string | null;
+      } | null;
+      model: string | null;
+      generation: string | null;
+      productionYearFrom: number | null;
+      productionYearTo: number | null;
+    } | null;
+    specificEngines: Array<string> | null;
+    position: "all" | "front" | "frontLeft" | "frontRight" | "left" | "rear" | "rearLeft" | "rearRight" | "right" | null;
+    restrictions: string | null;
+    confidence: "confirmed" | "likely" | "verify" | null;
+  }> | null;
+  replacesPartNumbers: Array<string> | null;
+  replacedByPartNumbers: Array<string> | null;
+  relatedProducts: Array<{
+    _id: string;
+    name: string | null;
+    slug: Slug | null;
+    productNumber: string | null;
+    manufacturer: {
+      name: string | null;
+      code: string | null;
+    } | null;
+    variants: {
+      basePrice: number | null;
+      images: {
+        asset: {
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+    } | null;
+  }> | null;
+  documents: Array<{
+    _id: string;
+    title: string | null;
+    type: "cad" | "certificate" | "compatibility" | "datasheet" | "exploded" | "installation" | "manual" | "other" | "safety" | "warranty" | null;
+    description: string | null;
+    language: "de" | "en" | "es" | "fr" | "it" | "multi" | null;
+    version: string | null;
+    file: {
+      asset: {
+        url: string | null;
+        size: number | null;
+      } | null;
+    } | null;
+    fileSize: number | null;
+  }> | null;
+  searchKeywords: Array<string> | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  _updatedAt: string;
+} | null;
+// Variable: PRODUCTS_QUERY
+// Query: *[_type == "product" && isActive == true] | order(name asc) [$start..$end] {    _id,    name,    slug,    productNumber,    manufacturer->{      name,      code,      logo{        asset->{          url,          metadata {            lqip          }        }      }    },    categories[0]->{      name,      code    },    shortDescription,    variants[0]{      sku,      basePrice,      stockStatus,      images[0]{        asset->{          url,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      }    }  }
+export type PRODUCTS_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    name: string | null;
+    code: string | null;
+    logo: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+  categories: {
+    name: string | null;
+    code: string | null;
+  } | null;
+  shortDescription: string | null;
+  variants: {
+    sku: string | null;
+    basePrice: number | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    images: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+}>;
+// Variable: PRODUCTS_SEARCH_QUERY
+// Query: *[    _type == "product" &&     isActive == true &&    ($searchTerm == "" ||      name match $searchTerm + "*" ||      productNumber match $searchTerm + "*" ||     manufacturer->name match $searchTerm + "*" ||     searchKeywords match $searchTerm + "*"    ) &&    ($manufacturerId == "" || manufacturer._ref == $manufacturerId) &&    ($categoryId == "" || $categoryId in categories[]._ref)  ] | order(    select(      $searchTerm != "" && name match $searchTerm + "*" => 0,      $searchTerm != "" && productNumber match $searchTerm + "*" => 1,      $searchTerm != "" && manufacturer->name match $searchTerm + "*" => 2,      3    ),    name asc  ) [$start..$end] {    _id,    name,    slug,    productNumber,    manufacturer->{      _id,      name,      code,      logo{        asset->{          url,          metadata {            lqip          }        }      }    },    categories[]->{      _id,      name,      code    },    shortDescription,    variants[0]{      sku,      basePrice,      stockStatus,      images[0]{        asset->{          url,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      }    },    _score  }
+export type PRODUCTS_SEARCH_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    _id: string;
+    name: string | null;
+    code: string | null;
+    logo: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+  categories: Array<{
+    _id: string;
+    name: string | null;
+    code: string | null;
+  }> | null;
+  shortDescription: string | null;
+  variants: {
+    sku: string | null;
+    basePrice: number | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    images: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+  _score: null;
+}>;
+// Variable: PRODUCTS_COUNT_QUERY
+// Query: count(*[_type == "product" && isActive == true])
+export type PRODUCTS_COUNT_QUERYResult = number;
+// Variable: PRODUCTS_SLUGS_QUERY
+// Query: *[_type == "product" && defined(slug) && isActive == true]{    slug  }
+export type PRODUCTS_SLUGS_QUERYResult = Array<{
+  slug: Slug | null;
+}>;
+// Variable: PRODUCTS_BY_CATEGORY_QUERY
+// Query: *[_type == "product" && isActive == true && $categoryId in categories[]._ref] | order(name asc) [$start..$end] {    _id,    name,    slug,    productNumber,    manufacturer->{      name,      code,      logo{        asset->{          url,          metadata {            lqip          }        }      }    },    shortDescription,    variants[0]{      sku,      basePrice,      stockStatus,      images[0]{        asset->{          url,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      }    }  }
+export type PRODUCTS_BY_CATEGORY_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    name: string | null;
+    code: string | null;
+    logo: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+  shortDescription: string | null;
+  variants: {
+    sku: string | null;
+    basePrice: number | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    images: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+}>;
+// Variable: PRODUCTS_BY_VEHICLE_QUERY
+// Query: *[_type == "product" && isActive == true && $vehicleId in compatibleVehicles[]->vehicle._ref] | order(name asc) {    _id,    name,    slug,    productNumber,    manufacturer->{      name,      code    },    categories[0]->{      name,      code    },    variants[0]{      sku,      basePrice,      stockStatus,      images[0]{        asset->{          url,          metadata {            lqip          }        },        alt      }    },    compatibleVehicles[vehicle._ref == $vehicleId][0]{      position,      restrictions,      specificEngines    }  }
+export type PRODUCTS_BY_VEHICLE_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  productNumber: string | null;
+  manufacturer: {
+    name: string | null;
+    code: string | null;
+  } | null;
+  categories: {
+    name: string | null;
+    code: string | null;
+  } | null;
+  variants: {
+    sku: string | null;
+    basePrice: number | null;
+    stockStatus: "discontinued" | "inStock" | "lowStock" | "outOfStock" | "preOrder" | null;
+    images: {
+      asset: {
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+        } | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+  compatibleVehicles: {
+    position: null;
+    restrictions: null;
+    specificEngines: null;
+  } | null;
+}>;
+
 // Source: ./sanity/queries/settings.ts
 // Variable: SETTINGS_QUERY
 // Query: *[_type == "settings"][0]{  _type,  siteName,  logo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  copyright}
@@ -2366,12 +3489,34 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "\n    *[_type == 'page'] | order(slug.current) {\n      'url': $baseUrl + select(slug.current == 'index' => '', '/' + slug.current),\n      'lastModified': _updatedAt,\n      'changeFrequency': 'daily',\n      'priority': select(\n        slug.current == 'index' => 1,\n        0.5\n      )\n    }\n  ": PagesQueryResult;
     "\n    *[_type == 'post'] | order(_updatedAt desc) {\n      'url': $baseUrl + '/blog/' + slug.current,\n      'lastModified': _updatedAt,\n      'changeFrequency': 'weekly',\n      'priority': 0.7\n    }\n  ": PostsQueryResult;
+    "\n  *[_type == \"productCategory\" && isActive == true] | order(sortOrder asc, name asc) {\n    _id,\n    name,\n    code,\n    slug,\n    description,\n    image{\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    parent->{\n      _id,\n      name,\n      code,\n      slug\n    },\n    \"children\": *[_type == \"productCategory\" && parent._ref == ^._id && isActive == true] | order(sortOrder asc, name asc) {\n      _id,\n      name,\n      code,\n      slug,\n      description,\n      image{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    },\n    \"productCount\": count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true])\n  }\n": CATEGORIES_QUERYResult;
+    "\n  *[_type == \"productCategory\" && !defined(parent) && isActive == true] | order(sortOrder asc, name asc) {\n    _id,\n    name,\n    code,\n    slug,\n    description,\n    image{\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"children\": *[_type == \"productCategory\" && parent._ref == ^._id && isActive == true] | order(sortOrder asc, name asc) {\n      _id,\n      name,\n      code,\n      slug,\n      image{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      },\n      \"productCount\": count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true])\n    },\n    \"productCount\": count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true])\n  }\n": ROOT_CATEGORIES_QUERYResult;
+    "\n  *[_type == \"productCategory\" && slug.current == $slug][0]{\n    _id,\n    name,\n    code,\n    slug,\n    description,\n    image{\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    parent->{\n      _id,\n      name,\n      code,\n      slug,\n      parent->{\n        _id,\n        name,\n        code,\n        slug\n      }\n    },\n    \"children\": *[_type == \"productCategory\" && parent._ref == ^._id && isActive == true] | order(sortOrder asc, name asc) {\n      _id,\n      name,\n      code,\n      slug,\n      description,\n      image{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      },\n      \"productCount\": count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true])\n    },\n    \"products\": *[_type == \"product\" && ^._id in categories[]._ref && isActive == true] | order(name asc) [0..11] {\n      _id,\n      name,\n      slug,\n      productNumber,\n      manufacturer->{\n        name,\n        code\n      },\n      shortDescription,\n      variants[0]{\n        sku,\n        basePrice,\n        stockStatus,\n        images[0]{\n          asset->{\n            url,\n            metadata {\n              lqip\n            }\n          },\n          alt\n        }\n      }\n    },\n    \"totalProducts\": count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true]),\n    seoTitle,\n    seoDescription\n  }\n": CATEGORY_QUERYResult;
+    "\n  *[_type == \"productCategory\" && defined(slug) && isActive == true]{\n    slug\n  }\n": CATEGORIES_SLUGS_QUERYResult;
+    "\n  *[_type == \"manufacturer\" && isActive == true] | order(name asc) {\n    _id,\n    name,\n    code,\n    slug,\n    logo{\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    description,\n    website,\n    \"productCount\": count(*[_type == \"product\" && manufacturer._ref == ^._id && isActive == true])\n  }\n": MANUFACTURERS_QUERYResult;
+    "\n  *[_type == \"manufacturer\" && slug.current == $slug][0]{\n    _id,\n    name,\n    code,\n    slug,\n    logo{\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    description,\n    website,\n    \"products\": *[_type == \"product\" && manufacturer._ref == ^._id && isActive == true] | order(name asc) [0..11] {\n      _id,\n      name,\n      slug,\n      productNumber,\n      shortDescription,\n      variants[0]{\n        sku,\n        basePrice,\n        images[0]{\n          asset->{\n            url,\n            metadata {\n              lqip\n            }\n          },\n          alt\n        }\n      }\n    },\n    \"totalProducts\": count(*[_type == \"product\" && manufacturer._ref == ^._id && isActive == true])\n  }\n": MANUFACTURER_QUERYResult;
+    "\n  *[_type == \"manufacturer\" && defined(slug) && isActive == true]{\n    slug\n  }\n": MANUFACTURERS_SLUGS_QUERYResult;
+    "\n  *[\n    _type == \"product\" && \n    isActive == true &&\n    ($searchTerm == \"\" || \n     name match $searchTerm + \"*\" || \n     productNumber match $searchTerm + \"*\" ||\n     manufacturer->name match $searchTerm + \"*\" ||\n     variants[].sku match $searchTerm + \"*\" ||\n     searchKeywords match $searchTerm + \"*\" ||\n     replacesPartNumbers match $searchTerm + \"*\"\n    )\n  ] | order(\n    select(\n      name match $searchTerm + \"*\" => 0,\n      productNumber match $searchTerm + \"*\" => 1,\n      variants[].sku match $searchTerm + \"*\" => 2,\n      manufacturer->name match $searchTerm + \"*\" => 3,\n      replacesPartNumbers match $searchTerm + \"*\" => 4,\n      searchKeywords match $searchTerm + \"*\" => 5,\n      6\n    ),\n    name asc\n  ) [0..49] {\n    _id,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      _id,\n      name,\n      code,\n      logo{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    },\n    categories[0]->{\n      _id,\n      name,\n      code\n    },\n    shortDescription,\n    variants[0]{\n      sku,\n      basePrice,\n      stockStatus,\n      images[0]{\n        asset->{\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    \"matchType\": select(\n      name match $searchTerm + \"*\" => \"name\",\n      productNumber match $searchTerm + \"*\" => \"productNumber\",\n      variants[].sku match $searchTerm + \"*\" => \"sku\",\n      manufacturer->name match $searchTerm + \"*\" => \"manufacturer\",\n      replacesPartNumbers match $searchTerm + \"*\" => \"partNumber\",\n      searchKeywords match $searchTerm + \"*\" => \"keyword\",\n      \"other\"\n    )\n  }\n": GLOBAL_SEARCH_QUERYResult;
+    "\n  {\n    \"products\": *[\n      _type == \"product\" && \n      isActive == true &&\n      (name match $searchTerm + \"*\" || productNumber match $searchTerm + \"*\")\n    ] | order(name asc) [0..4] {\n      name,\n      productNumber,\n      slug,\n      manufacturer->{\n        name,\n        code\n      }\n    },\n    \"manufacturers\": *[\n      _type == \"manufacturer\" && \n      isActive == true &&\n      name match $searchTerm + \"*\"\n    ] | order(name asc) [0..3] {\n      name,\n      code,\n      slug\n    },\n    \"categories\": *[\n      _type == \"productCategory\" && \n      isActive == true &&\n      name match $searchTerm + \"*\"\n    ] | order(name asc) [0..3] {\n      name,\n      code,\n      slug\n    }\n  }\n": SEARCH_SUGGESTIONS_QUERYResult;
+    "\n  {\n    \"manufacturers\": *[\n      _type == \"manufacturer\" && \n      isActive == true &&\n      count(*[_type == \"product\" && manufacturer._ref == ^._id && isActive == true]) > 0\n    ] | order(name asc) {\n      _id,\n      name,\n      code,\n      \"productCount\": count(*[_type == \"product\" && manufacturer._ref == ^._id && isActive == true])\n    },\n    \"categories\": *[\n      _type == \"productCategory\" && \n      isActive == true &&\n      count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true]) > 0\n    ] | order(name asc) {\n      _id,\n      name,\n      code,\n      parent->{\n        _id,\n        name\n      },\n      \"productCount\": count(*[_type == \"product\" && ^._id in categories[]._ref && isActive == true])\n    }\n  }\n": SEARCH_FILTERS_QUERYResult;
+    "\n  *[\n    _type == \"product\" && \n    isActive == true &&\n    (\n      productNumber == $partNumber ||\n      variants[].sku == $partNumber ||\n      replacesPartNumbers match $partNumber\n    )\n  ] | order(\n    select(\n      productNumber == $partNumber => 0,\n      variants[].sku == $partNumber => 1,\n      2\n    )\n  ) [0..9] {\n    _id,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      name,\n      code\n    },\n    variants[sku == $partNumber || productNumber == $partNumber][0]{\n      sku,\n      basePrice,\n      stockStatus,\n      images[0]{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        },\n        alt\n      }\n    },\n    \"matchType\": select(\n      productNumber == $partNumber => \"exact\",\n      variants[].sku == $partNumber => \"variant\",\n      \"replacement\"\n    )\n  }\n": PART_NUMBER_LOOKUP_QUERYResult;
+    "\n  *[_type == \"manufacturer\" && isActive == true] | order(name asc) {\n    _id,\n    name,\n    code,\n    \"models\": *[_type == \"vehicleModel\" && manufacturer._ref == ^._id && isActive == true] | order(model asc, productionYearFrom desc) {\n      _id,\n      model,\n      generation,\n      bodyType,\n      productionYearFrom,\n      productionYearTo,\n      engines[]{\n        code,\n        displacement,\n        power,\n        fuelType\n      },\n      chassis,\n      image{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    }\n  }\n": VEHICLES_QUERYResult;
+    "\n  *[_type == \"vehicleModel\" && _id == $vehicleId][0]{\n    _id,\n    manufacturer->{\n      _id,\n      name,\n      code,\n      logo{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    },\n    model,\n    generation,\n    bodyType,\n    productionYearFrom,\n    productionYearTo,\n    engines[]{\n      code,\n      displacement,\n      power,\n      fuelType\n    },\n    chassis,\n    image{\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"compatibleProducts\": *[_type == \"product\" && isActive == true && $vehicleId in compatibleVehicles[]->vehicle._ref] | order(name asc) {\n      _id,\n      name,\n      slug,\n      productNumber,\n      manufacturer->{\n        name,\n        code\n      },\n      categories[0]->{\n        name,\n        code\n      },\n      shortDescription,\n      variants[0]{\n        sku,\n        basePrice,\n        stockStatus,\n        images[0]{\n          asset->{\n            url,\n            metadata {\n              lqip\n            }\n          },\n          alt\n        }\n      },\n      compatibleVehicles[vehicle._ref == $vehicleId][0]{\n        position,\n        restrictions,\n        specificEngines,\n        confidence\n      }\n    }\n  }\n": VEHICLE_QUERYResult;
+    "\n  *[\n    _type == \"vehicleModel\" && \n    isActive == true &&\n    ($manufacturerId == \"\" || manufacturer._ref == $manufacturerId) &&\n    ($model == \"\" || model match $model + \"*\") &&\n    ($yearFrom == null || productionYearFrom <= $yearFrom) &&\n    ($yearTo == null || !defined(productionYearTo) || productionYearTo >= $yearTo)\n  ] | order(manufacturer->name asc, model asc, productionYearFrom desc) [0..49] {\n    _id,\n    manufacturer->{\n      _id,\n      name,\n      code\n    },\n    model,\n    generation,\n    bodyType,\n    productionYearFrom,\n    productionYearTo,\n    engines[0]{\n      code,\n      displacement,\n      fuelType\n    },\n    \"productCount\": count(*[_type == \"product\" && ^._id in compatibleVehicles[]->vehicle._ref && isActive == true])\n  }\n": VEHICLE_COMPATIBILITY_QUERYResult;
+    "\n  *[_type == \"vehicleModel\" && isActive == true] {\n    _id,\n    manufacturer->{\n      name,\n      code\n    },\n    model,\n    generation,\n    productionYearFrom,\n    productionYearTo,\n    \"productCount\": count(*[_type == \"product\" && ^._id in compatibleVehicles[]->vehicle._ref && isActive == true])\n  } | order(productCount desc) [0..11] | productCount > 0\n": POPULAR_VEHICLES_QUERYResult;
     "\n  *[_type == \"navigation\"]{\n    _type,\n    _key,\n    links\n  }\n": NAVIGATION_QUERYResult;
-    "\n  *[_type == \"page\" && slug.current == $slug][0]{\n    blocks[]{\n      \n  _type == \"hero-1\" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"hero-2\" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"section-header\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"split-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content\" => {\n    _type,\n    _key,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"split-cards-list\" => {\n    _type,\n    _key,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"split-image\" => {\n    _type,\n    _key,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"split-info-list\" => {\n    _type,\n    _key,\n    list[]{\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"grid-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card\" => {\n    _type,\n    _key,\n    title,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"pricing-card\" => {\n    _type,\n    _key,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"grid-post\" => {\n    _type,\n    _key,\n    post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      categories[]->{\n        _id,\n        title,\n      },\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"carousel-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"carousel-2\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    testimonial[]->{\n      _id,\n      name,\n      title,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n      rating,\n    },\n  }\n,\n      \n  _type == \"timeline-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"cta-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"logo-cloud-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"faqs\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    faqs[]->{\n      _id,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"form-newsletter\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n      \n  _type == \"all-posts\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n  }\n,\n    },\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": PAGE_QUERYResult;
+    "\n  *[_type == \"page\" && slug.current == $slug][0]{\n    blocks[]{\n      \n  _type == \"hero-1\" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"hero-2\" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"section-header\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"split-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content\" => {\n    _type,\n    _key,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"split-cards-list\" => {\n    _type,\n    _key,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"split-image\" => {\n    _type,\n    _key,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"split-info-list\" => {\n    _type,\n    _key,\n    list[]{\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"grid-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card\" => {\n    _type,\n    _key,\n    title,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"pricing-card\" => {\n    _type,\n    _key,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"grid-post\" => {\n    _type,\n    _key,\n    post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      categories[]->{\n        _id,\n        title,\n      },\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"carousel-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"carousel-2\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    testimonial[]->{\n      _id,\n      name,\n      title,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n      rating,\n    },\n  }\n,\n      \n  _type == \"timeline-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"cta-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"logo-cloud-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"faqs\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    faqs[]->{\n      _id,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"form-newsletter\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n      \n  _type == \"all-posts\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n  }\n,\n      \n  _type == \"product-catalog\" => {\n    _type,\n    _key,\n    title,\n    subtitle,\n    showSearch,\n    showCategories,\n    showManufacturers,\n    productsPerPage,\n    featuredCategories[]->{\n      _id,\n      name,\n      slug\n    },\n    featuredManufacturers[]->{\n      _id,\n      name,\n      slug\n    },\n    padding,\n    colorVariant,\n  }\n,\n    },\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": PAGE_QUERYResult;
     "*[_type == \"page\" && defined(slug)]{slug}": PAGES_SLUGS_QUERYResult;
     "*[_type == \"post\" && slug.current == $slug][0]{\n    title,\n    slug,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    author->{\n      name,\n      image {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    _createdAt,\n    _updatedAt,\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n}": POST_QUERYResult;
     "*[_type == \"post\" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n}": POSTS_QUERYResult;
     "*[_type == \"post\" && defined(slug)]{slug}": POSTS_SLUGS_QUERYResult;
+    "\n  *[_type == \"product\" && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      _id,\n      name,\n      code,\n      logo{\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    categories[]->{\n      _id,\n      name,\n      code,\n      slug\n    },\n    shortDescription,\n    description,\n    features,\n    specifications[]{\n      name,\n      value,\n      unit\n    },\n    variants[]{\n      sku,\n      name,\n      attributes[]{\n        name,\n        value\n      },\n      basePrice,\n      weight,\n      dimensions{\n        length,\n        width,\n        height\n      },\n      images[]{\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt,\n        caption\n      },\n      stockStatus,\n      isActive\n    },\n    compatibleVehicles[]->{\n      _id,\n      vehicle->{\n        _id,\n        manufacturer->{\n          name,\n          code\n        },\n        model,\n        generation,\n        productionYearFrom,\n        productionYearTo\n      },\n      specificEngines,\n      position,\n      restrictions,\n      confidence\n    },\n    replacesPartNumbers,\n    replacedByPartNumbers,\n    relatedProducts[]->{\n      _id,\n      name,\n      slug,\n      productNumber,\n      manufacturer->{\n        name,\n        code\n      },\n      variants[0]{\n        basePrice,\n        images[0]{\n          asset->{\n            url,\n            metadata {\n              lqip\n            }\n          },\n          alt\n        }\n      }\n    },\n    documents[]->{\n      _id,\n      title,\n      type,\n      description,\n      language,\n      version,\n      file{\n        asset->{\n          url,\n          size\n        }\n      },\n      fileSize\n    },\n    searchKeywords,\n    seoTitle,\n    seoDescription,\n    _updatedAt\n  }\n": PRODUCT_QUERYResult;
+    "\n  *[_type == \"product\" && isActive == true] | order(name asc) [$start..$end] {\n    _id,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      name,\n      code,\n      logo{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    },\n    categories[0]->{\n      name,\n      code\n    },\n    shortDescription,\n    variants[0]{\n      sku,\n      basePrice,\n      stockStatus,\n      images[0]{\n        asset->{\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    }\n  }\n": PRODUCTS_QUERYResult;
+    "\n  *[\n    _type == \"product\" && \n    isActive == true &&\n    ($searchTerm == \"\" || \n     name match $searchTerm + \"*\" || \n     productNumber match $searchTerm + \"*\" ||\n     manufacturer->name match $searchTerm + \"*\" ||\n     searchKeywords match $searchTerm + \"*\"\n    ) &&\n    ($manufacturerId == \"\" || manufacturer._ref == $manufacturerId) &&\n    ($categoryId == \"\" || $categoryId in categories[]._ref)\n  ] | order(\n    select(\n      $searchTerm != \"\" && name match $searchTerm + \"*\" => 0,\n      $searchTerm != \"\" && productNumber match $searchTerm + \"*\" => 1,\n      $searchTerm != \"\" && manufacturer->name match $searchTerm + \"*\" => 2,\n      3\n    ),\n    name asc\n  ) [$start..$end] {\n    _id,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      _id,\n      name,\n      code,\n      logo{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    },\n    categories[]->{\n      _id,\n      name,\n      code\n    },\n    shortDescription,\n    variants[0]{\n      sku,\n      basePrice,\n      stockStatus,\n      images[0]{\n        asset->{\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    _score\n  }\n": PRODUCTS_SEARCH_QUERYResult;
+    "\n  count(*[_type == \"product\" && isActive == true])\n": PRODUCTS_COUNT_QUERYResult;
+    "\n  *[_type == \"product\" && defined(slug) && isActive == true]{\n    slug\n  }\n": PRODUCTS_SLUGS_QUERYResult;
+    "\n  *[_type == \"product\" && isActive == true && $categoryId in categories[]._ref] | order(name asc) [$start..$end] {\n    _id,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      name,\n      code,\n      logo{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        }\n      }\n    },\n    shortDescription,\n    variants[0]{\n      sku,\n      basePrice,\n      stockStatus,\n      images[0]{\n        asset->{\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    }\n  }\n": PRODUCTS_BY_CATEGORY_QUERYResult;
+    "\n  *[_type == \"product\" && isActive == true && $vehicleId in compatibleVehicles[]->vehicle._ref] | order(name asc) {\n    _id,\n    name,\n    slug,\n    productNumber,\n    manufacturer->{\n      name,\n      code\n    },\n    categories[0]->{\n      name,\n      code\n    },\n    variants[0]{\n      sku,\n      basePrice,\n      stockStatus,\n      images[0]{\n        asset->{\n          url,\n          metadata {\n            lqip\n          }\n        },\n        alt\n      }\n    },\n    compatibleVehicles[vehicle._ref == $vehicleId][0]{\n      position,\n      restrictions,\n      specificEngines\n    }\n  }\n": PRODUCTS_BY_VEHICLE_QUERYResult;
     "*[_type == \"settings\"][0]{\n  _type,\n  siteName,\n  logo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  copyright\n}": SETTINGS_QUERYResult;
   }
 }

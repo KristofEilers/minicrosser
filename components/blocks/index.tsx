@@ -12,6 +12,7 @@ import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
+import ProductCatalog from "@/components/blocks/product-catalog";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 
@@ -31,21 +32,28 @@ const componentMap: {
   faqs: FAQs,
   "form-newsletter": FormNewsletter,
   "all-posts": AllPosts,
+  "product-catalog": ProductCatalog,
 };
 
 export default function Blocks({ blocks }: { blocks: Block[] }) {
   return (
     <>
-      {blocks?.map((block) => {
+      {blocks?.map((block, index) => {
+        // Ensure we have a valid block with _type
+        if (!block || !block._type) {
+          console.warn(`Invalid block at index ${index}:`, block);
+          return <div key={block?._key || `invalid-${index}`} data-invalid="true" />;
+        }
+
         const Component = componentMap[block._type];
         if (!Component) {
           // Fallback for development/debugging of new component types
           console.warn(
             `No component implemented for block type: ${block._type}`
           );
-          return <div data-type={block._type} key={block._key} />;
+          return <div data-type={block._type} key={block._key || `unknown-${index}`} />;
         }
-        return <Component {...(block as any)} key={block._key} />;
+        return <Component {...(block as any)} key={block._key || `block-${index}`} />;
       })}
     </>
   );

@@ -7,12 +7,88 @@ import {
   Quote,
   Menu,
   Settings,
+  Package2,
+  Building2,
+  FolderTree,
+  Car,
+  GitBranch,
+  FileText,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
   S.list()
     .title("Content")
     .items([
+      // Product Catalog Section
+      S.listItem()
+        .title("Product Catalog")
+        .icon(Package2)
+        .child(
+          S.list()
+            .title("Product Catalog")
+            .items([
+              S.listItem()
+                .title("Products")
+                .icon(Package2)
+                .schemaType("product")
+                .child(
+                  S.documentTypeList("product")
+                    .title("Products")
+                    .defaultOrdering([{ field: "name", direction: "asc" }])
+                ),
+              S.listItem()
+                .title("Manufacturers")
+                .icon(Building2)
+                .schemaType("manufacturer")
+                .child(
+                  S.documentTypeList("manufacturer")
+                    .title("Manufacturers")
+                    .defaultOrdering([{ field: "name", direction: "asc" }])
+                ),
+              S.listItem()
+                .title("Categories")
+                .icon(FolderTree)
+                .schemaType("productCategory")
+                .child(
+                  S.documentTypeList("productCategory")
+                    .title("Product Categories")
+                    .defaultOrdering([{ field: "name", direction: "asc" }])
+                ),
+              S.divider(),
+              S.listItem()
+                .title("Vehicle Models")
+                .icon(Car)
+                .schemaType("vehicleModel")
+                .child(
+                  S.documentTypeList("vehicleModel")
+                    .title("Vehicle Models")
+                    .defaultOrdering([
+                      { field: "manufacturer.name", direction: "asc" },
+                      { field: "model", direction: "asc" },
+                    ])
+                ),
+              S.listItem()
+                .title("Vehicle Compatibility")
+                .icon(GitBranch)
+                .schemaType("vehicleCompatibility")
+                .child(
+                  S.documentTypeList("vehicleCompatibility")
+                    .title("Vehicle Compatibility")
+                ),
+              S.listItem()
+                .title("Product Documents")
+                .icon(FileText)
+                .schemaType("productDocument")
+                .child(
+                  S.documentTypeList("productDocument")
+                    .title("Product Documents")
+                    .defaultOrdering([{ field: "title", direction: "asc" }])
+                ),
+            ])
+        ),
+      S.divider(),
+      
+      // Content Management Section
       orderableDocumentListDeskItem({
         type: "page",
         title: "Pages",
